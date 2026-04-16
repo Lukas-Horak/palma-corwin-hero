@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Palma Pre Ľudí — Hero Module · PLATFORM × Corwin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500&family=Inter:wght@300;400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#0f0f0f;
+    --ink-soft:#333333;
+    --muted:#8a8a8a;
+    --hairline:rgba(0,0,0,.08);
+    --chrome:#ffffff;
+    --page:#f4f0ea;
+    --accent:#A5C291;      /* Nyhavn Green — brand */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--page);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+
+  /* =========================================================
+     TOP METABAR — PLATFORM × Corwin
+     ========================================================= */
+  .metabar{
+    max-width:1520px;margin:0 auto;
+    padding:28px clamp(28px,5vw,72px) 0;
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:11px;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+  }
+  .metabar__brand{
+    color:var(--ink);
+    font-weight:600;
+    letter-spacing:.32em;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .metabar__brand::before{
+    content:"";width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+    display:inline-block;
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:.5;transform:scale(.7)}
+  }
+  .metabar__right{display:flex;gap:36px;align-items:center}
+  .metabar__right b{color:var(--ink);font-weight:500}
+
+  /* =========================================================
+     HERO HEADER — case study title block
+     ========================================================= */
+  .case-header{
+    max-width:1520px;margin:0 auto;
+    padding:56px clamp(28px,5vw,72px) 48px;
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap:48px;
+    align-items:flex-end;
+    border-bottom:1px solid var(--hairline);
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.32em;
+    text-transform:uppercase;
+    color:var(--muted);
+    font-weight:500;
+    margin-bottom:16px;
+  }
+  .title{
+    font-family:'Fraunces',serif;
+    font-weight:400;
+    font-size:clamp(36px, 5vw, 68px);
+    letter-spacing:-.02em;
+    line-height:1;
+    color:var(--ink);
+  }
+  .title em{font-style:italic;color:#8A7370}
+  .subtitle{
+    margin-top:18px;
+    font-size:16px;
+    color:var(--ink-soft);
+    letter-spacing:.01em;
+    max-width:560px;
+    line-height:1.5;
+  }
+
+  .case-spec{
+    display:grid;
+    grid-template-columns:auto auto;
+    gap:6px 36px;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--muted);
+    align-self:flex-end;
+    justify-self:end;
+  }
+  .case-spec dt{font-weight:500;color:var(--muted)}
+  .case-spec dd{color:var(--ink);font-weight:500;letter-spacing:.1em}
+
+  /* =========================================================
+     STAGE (devices)
+     ========================================================= */
+  .stage{
+    max-width:1520px;margin:0 auto;
+    padding:48px clamp(28px,5vw,72px) 96px;
+    display:flex;flex-direction:column;align-items:center;gap:72px;
+  }
+
+  .section-label{
+    width:100%;
+    display:flex;align-items:center;gap:18px;
+    font-size:11px;color:var(--muted);
+    letter-spacing:.32em;text-transform:uppercase;
+    font-weight:500;
+    margin-bottom:-36px;
+  }
+  .section-label b{color:var(--ink);font-weight:500}
+  .section-label .rule{flex:1;height:1px;background:var(--hairline)}
+  .section-label .num{
+    font-family:'Fraunces',serif;
+    letter-spacing:.06em;
+    font-size:13px;
+    color:var(--muted);
+  }
+
+  .device{
+    background:var(--chrome);
+    border-radius:18px;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.04),
+      0 30px 70px rgba(40,30,20,.10);
+    overflow:hidden;
+    position:relative;
+    transition:transform .6s cubic-bezier(.77,0,.175,1),box-shadow .6s cubic-bezier(.77,0,.175,1);
+  }
+  .device:hover{
+    transform:translateY(-4px);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.04),
+      0 40px 90px rgba(40,30,20,.16);
+  }
+  .device__bar{
+    height:42px;background:#f7f4ee;
+    border-bottom:1px solid var(--hairline);
+    display:flex;align-items:center;padding:0 18px;gap:14px;
+  }
+  .device__dots{display:flex;gap:6px}
+  .device__dots i{width:11px;height:11px;border-radius:50%;background:#e0d6c9;display:inline-block}
+  .device__dots i:nth-child(1){background:#f0b8b7}
+  .device__dots i:nth-child(2){background:#f0d3a8}
+  .device__dots i:nth-child(3){background:#c2d6b7}
+  .device__url{flex:1;text-align:center;font-size:12px;color:var(--muted);letter-spacing:.04em}
+  .device__url b{color:var(--ink);font-weight:500}
+  .device__size-top{font-size:10px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase}
+
+  .frame-wrap{position:relative;background:#fff;overflow:hidden}
+  iframe{border:0;display:block;background:#E3D6CC;width:100%;height:100%}
+
+  .device__caption{
+    padding:20px 22px;
+    display:flex;justify-content:space-between;align-items:center;
+    border-top:1px solid var(--hairline);background:#fff;
+  }
+  .device__caption h3{font-family:'Fraunces',serif;font-weight:500;font-size:17px;letter-spacing:.01em}
+  .device__caption .size{font-size:11px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+
+  /* DESKTOP */
+  .device--desktop{width:100%;max-width:1280px}
+  .device--desktop .frame-wrap{aspect-ratio:1440/900}
+  .device--desktop iframe{width:1440px;height:900px;transform-origin:top left}
+
+  /* ROW */
+  .row{width:100%;display:flex;gap:48px;justify-content:center;flex-wrap:wrap;align-items:flex-start}
+
+  .device--tablet{width:460px}
+  .device--tablet .frame-wrap{width:100%;aspect-ratio:768/1024}
+  .device--tablet iframe{width:768px;height:1024px;transform-origin:top left}
+
+  .device--mobile{width:280px}
+  .device--mobile .frame-wrap{width:100%;aspect-ratio:390/844}
+  .device--mobile iframe{width:390px;height:844px;transform-origin:top left}
+
+  @media (max-width:900px){
+    .case-header{grid-template-columns:1fr}
+    .case-spec{justify-self:start}
+    .device--tablet{width:min(100%,460px)}
+    .device--mobile{width:min(100%,300px)}
+  }
+  @media (max-width:540px){
+    .metabar{padding:22px 20px 0;gap:12px;flex-wrap:wrap}
+    .metabar__right{gap:18px}
+    .case-header{padding:40px 20px 32px}
+    .stage{padding:32px 20px 72px;gap:56px}
+  }
+
+  /* =========================================================
+     FOOTER — PLATFORM credit
+     ========================================================= */
+  .footer{
+    max-width:1520px;margin:0 auto;
+    padding:40px clamp(28px,5vw,72px) 64px;
+    border-top:1px solid var(--hairline);
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    align-items:center;gap:24px;
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .footer__left{color:var(--ink);font-weight:500;letter-spacing:.32em}
+  .footer__center{text-align:center;letter-spacing:.24em}
+  .footer__right{text-align:right}
+  .footer a{
+    color:var(--ink);text-decoration:none;
+    border-bottom:1px solid var(--hairline);
+    padding-bottom:2px;letter-spacing:.24em;
+    transition:border-color .3s ease;
+  }
+  .footer a:hover{border-color:var(--ink)}
+
+  @media (max-width:720px){
+    .footer{grid-template-columns:1fr;text-align:left}
+    .footer__center,.footer__right{text-align:left}
+  }
+</style>
+</head>
+<body>
+
+<!-- ========== Top metabar ========== -->
+<div class="metabar">
+  <span class="metabar__brand">PLATFORM</span>
+  <div class="metabar__right">
+    <span>Client · <b>Corwin</b></span>
+    <span>V1.0</span>
+    <span>April 2026</span>
+    <span>Confidential</span>
+  </div>
+</div>
+
+<!-- ========== Case study header ========== -->
+<header class="case-header">
+  <div>
+    <div class="eyebrow">Case Study · Homepage</div>
+    <h1 class="title">Palma <em>Pre Ľudí</em> — Hero Module</h1>
+    <p class="subtitle">Interaktívny prototyp hero modulu s auto‑rotujúcim carouselom štyroch variantov. Optimalizované pre tri hlavné breakpointy a prispôsobené brand systému Palma.</p>
+  </div>
+  <dl class="case-spec">
+    <dt>Module</dt><dd>Hero / Home</dd>
+    <dt>Variants</dt><dd>04</dd>
+    <dt>Breakpoints</dt><dd>1440 · 768 · 390</dd>
+    <dt>Status</dt><dd>Review</dd>
+  </dl>
+</header>
+
+<!-- ========== Stage ========== -->
+<main class="stage">
+
+  <div class="section-label">
+    <span class="num">01</span>
+    <span><b>Desktop</b> · 1440</span>
+    <span class="rule"></span>
+    <span>Primary</span>
+  </div>
+
+  <section class="device device--desktop" aria-label="Desktop 1440">
+    <div class="device__bar">
+      <div class="device__dots"><i></i><i></i><i></i></div>
+      <div class="device__url">palmapreludi.sk <b>/ hero</b></div>
+      <div class="device__size-top">1440 × 900</div>
+    </div>
+    <div class="frame-wrap">
+      <iframe src="hero.html" title="Desktop 1440" id="frame-desktop"></iframe>
+    </div>
+    <div class="device__caption">
+      <h3>Desktop</h3>
+      <span class="size">1440 px</span>
+    </div>
+  </section>
+
+  <div class="section-label">
+    <span class="num">02</span>
+    <span><b>Tablet &amp; Mobile</b></span>
+    <span class="rule"></span>
+    <span>Responsive</span>
+  </div>
+
+  <div class="row">
+    <section class="device device--tablet" aria-label="Tablet 768">
+      <div class="device__bar">
+        <div class="device__dots"><i></i><i></i><i></i></div>
+        <div class="device__url"><b>/ hero</b></div>
+        <div class="device__size-top">768</div>
+      </div>
+      <div class="frame-wrap">
+        <iframe src="hero.html" title="Tablet 768" id="frame-tablet"></iframe>
+      </div>
+      <div class="device__caption">
+        <h3>Tablet</h3>
+        <span class="size">768 px</span>
+      </div>
+    </section>
+
+    <section class="device device--mobile" aria-label="Mobile 390">
+      <div class="device__bar">
+        <div class="device__dots"><i></i><i></i><i></i></div>
+        <div class="device__url"><b>/hero</b></div>
+        <div class="device__size-top">390</div>
+      </div>
+      <div class="frame-wrap">
+        <iframe src="hero.html" title="Mobile 390" id="frame-mobile"></iframe>
+      </div>
+      <div class="device__caption">
+        <h3>Mobile</h3>
+        <span class="size">390 px</span>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<!-- ========== Footer ========== -->
+<footer class="footer">
+  <div class="footer__left">© 2026 PLATFORM</div>
+  <div class="footer__center">Prepared for Corwin · Strictly Confidential</div>
+  <div class="footer__right"><a href="hero.html" target="_blank">Open live hero ↗</a></div>
+</footer>
+
+<script>
+/* Proportionally scale each native-sized iframe to its wrapper width. */
+(function(){
+  const configs = [
+    { id:'frame-desktop', native:1440 },
+    { id:'frame-tablet',  native:768  },
+    { id:'frame-mobile',  native:390  }
+  ];
+  function applyScale(){
+    configs.forEach(c => {
+      const el = document.getElementById(c.id);
+      if(!el) return;
+      const wrap = el.parentElement;
+      const w = wrap.clientWidth;
+      const scale = w / c.native;
+      el.style.transform = 'scale(' + scale + ')';
+      el.style.width  = c.native + 'px';
+      const nativeHeight = wrap.clientHeight / scale;
+      el.style.height = nativeHeight + 'px';
+    });
+  }
+  window.addEventListener('load', applyScale);
+  window.addEventListener('resize', applyScale);
+  if (window.ResizeObserver){
+    const ro = new ResizeObserver(applyScale);
+    configs.forEach(c => {
+      const el = document.getElementById(c.id);
+      if(el && el.parentElement) ro.observe(el.parentElement);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1132 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Palma — Hero (interaktívny prototyp)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<!-- Images embedded as base64 data URIs for self-contained prototype -->
+<style>
+/* =========================================================
+   Palma — Hero carousel
+   Prototype 1:1 z Figma súboru Palma Pre Ľudí | Design
+   Tokens: Nordic Pastel #E3D6CC, Ink #333, Snow Queen #FFF5EB,
+           Hygge Brown #8A7370, Baltic Sunset #F7C8C7
+   Typography: Skilt Gothic (fallback Work Sans),
+               Meta Pro (fallback IBM Plex Sans)
+   ========================================================= */
+
+:root{
+  /* Palma brand palette — 1:1 z Figma design tokens */
+  --bg:          #E3D6CC;   /* Nordic Pastel */
+  --bg-soft:     #FFF5EB;   /* Snow Queen */
+  --ink:         #333333;   /* Black */
+  --sand:        #CFAE83;   /* Amager Sand */
+  --brown:       #8A7370;   /* Hygge Brown */
+  --slate:       #8FA7B0;   /* Nordic Pastel (blue variant) */
+  --green:       #A5C291;   /* Nyhavn Green — MÁM ZÁUJEM tab */
+  --pink:        #F7C8C7;   /* Baltic Sunset */
+  --muted:       #888;
+  --ease:        cubic-bezier(.77,0,.175,1);
+
+  --font-display: 'Skilt Gothic','Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  --font-body:    'Meta Pro','IBM Plex Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{background:var(--bg)}
+body{
+  font-family:var(--font-body);
+  color:var(--ink);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+img{display:block;max-width:100%}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+
+/* ---------- Stage ---------- */
+.stage{
+  position:relative;
+  width:100%;
+  height:100vh;
+  min-height:640px;
+  max-height:none;
+  background:var(--bg);
+  overflow:hidden;
+}
+
+/* ---------- Header / Nav ---------- */
+.hdr{
+  position:absolute;
+  top:0;left:0;right:0;
+  z-index:51;  /* above mob-nav (50) so burger/logo stay visible over overlay */
+  display:flex;
+  align-items:center;
+  padding:34px clamp(24px, 4vw, 56px) 0;
+  gap:clamp(16px, 3vw, 56px);
+}
+.hdr__logo{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:18px;
+  letter-spacing:.18em;
+  color:var(--ink);
+  user-select:none;
+  flex:0 0 auto;
+  display:inline-flex;align-items:center;
+  height:20px;
+}
+.hdr__logo img{
+  height:20px;
+  width:auto;
+  display:block;
+}
+/* Hide text fallback when an image has loaded */
+.hdr__logo img + .hdr__logo__text{display:none}
+.hdr__nav{
+  display:flex;
+  gap:clamp(14px, 2.4vw, 36px);
+  list-style:none;
+  margin:0 auto;
+  padding:0;
+}
+.hdr__nav a{
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:13px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  color:var(--ink);
+  padding:6px 0;
+  position:relative;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.hdr__nav a::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-2px;
+  height:2px;background:var(--ink);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform .5s var(--ease);
+  border-radius:1px;
+}
+.hdr__nav a:hover::after{transform:scaleX(1);transform-origin:left}
+
+/* Each nav item hover-underlines in a different brand-palette colour.
+   Order maps to the live nav below: Palma LIVE, Naša vízia, Tvorcovia,
+   Príbeh Palmy, Lokalita, Kontakt. */
+.hdr__nav a:nth-child(1)::after{background:var(--green)}   /* Nyhavn Green */
+.hdr__nav a:nth-child(2)::after{background:var(--pink)}    /* Baltic Sunset */
+.hdr__nav a:nth-child(3)::after{background:var(--sand)}    /* Amager Sand  */
+.hdr__nav a:nth-child(4)::after{background:var(--brown)}   /* Hygge Brown  */
+.hdr__nav a:nth-child(5)::after{background:var(--slate)}   /* Nordic Pastel (blue) */
+.hdr__nav a:nth-child(6)::after{background:var(--green)}   /* Nyhavn Green — wrap */
+
+.hdr__spacer{width:70px;flex:0 0 auto}
+
+/* ---------- Hamburger button (tablet / mobile only) ---------- */
+.hdr__burger{
+  display:none;             /* hidden on desktop */
+  flex:0 0 auto;
+  margin-left:auto;
+  width:44px; height:44px;
+  border:1px solid rgba(51,51,51,.2);
+  border-radius:0;
+  background:transparent;
+  position:relative;
+  cursor:pointer;
+  transition:border-color .35s var(--ease), background .35s var(--ease);
+  z-index:52;
+}
+.hdr__burger:hover{border-color:rgba(51,51,51,.45)}
+/* Two lines — minimal, centered in the square */
+.hdr__burger span{
+  display:block;
+  position:absolute;
+  left:12px; right:12px;
+  height:1.5px;
+  background:var(--ink);
+  border-radius:1px;
+  transition:transform .4s var(--ease), opacity .3s var(--ease);
+}
+.hdr__burger span:nth-child(1){top:16px}
+.hdr__burger span:nth-child(2){top:26px}
+/* Open state — X morph */
+.hdr__burger[aria-expanded="true"] span:nth-child(1){
+  top:21px;
+  transform:rotate(45deg);
+}
+.hdr__burger[aria-expanded="true"] span:nth-child(2){
+  top:21px;
+  transform:rotate(-45deg);
+}
+
+/* ---------- Mobile nav overlay ---------- */
+.mob-nav{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:var(--bg-soft);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .5s var(--ease), visibility 0s linear .5s;
+}
+.mob-nav[data-open="true"]{
+  opacity:1;
+  visibility:visible;
+  transition:opacity .5s var(--ease);
+}
+.mob-nav__link{
+  display:block;
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:clamp(24px, 5vw, 32px);
+  letter-spacing:-.01em;
+  color:var(--ink);
+  padding:14px 0;
+  position:relative;
+  opacity:0;
+  transform:translateY(16px);
+}
+.mob-nav[data-open="true"] .mob-nav__link{
+  opacity:1;
+  transform:translateY(0);
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+}
+/* Stagger each link */
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(1){transition-delay:.05s}
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(2){transition-delay:.1s}
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(3){transition-delay:.15s}
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(4){transition-delay:.2s}
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(5){transition-delay:.25s}
+.mob-nav[data-open="true"] .mob-nav__link:nth-child(6){transition-delay:.3s}
+/* Subtle coloured dot before each link — brand palette */
+.mob-nav__link::before{
+  content:"";
+  display:inline-block;
+  width:6px; height:6px;
+  border-radius:50%;
+  margin-right:14px;
+  vertical-align:middle;
+  opacity:.7;
+}
+.mob-nav__link:nth-child(1)::before{background:var(--green)}
+.mob-nav__link:nth-child(2)::before{background:var(--pink)}
+.mob-nav__link:nth-child(3)::before{background:var(--sand)}
+.mob-nav__link:nth-child(4)::before{background:var(--brown)}
+.mob-nav__link:nth-child(5)::before{background:var(--slate)}
+.mob-nav__link:nth-child(6)::before{background:var(--green)}
+
+/* MÁM ZÁUJEM CTA inside mobile nav — hidden on desktop, shown on ≤480px */
+.mob-nav__cta{
+  display:none;
+  margin-top:32px;
+  align-items:center;
+  justify-content:center;
+  background:var(--green);
+  color:#fff;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:12px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  padding:14px 28px;
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(16px);
+}
+.mob-nav[data-open="true"] .mob-nav__cta{
+  opacity:1;
+  transform:translateY(0);
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+  transition-delay:.35s;
+}
+
+/* ---------- MÁM ZÁUJEM tab ----------
+   Desktop: fixed to top-right corner of .stage (absolute positioned).
+   Tablet (≤820px): inline horizontal button inside header flex row.
+   Mobile (≤480px): hidden — lives inside hamburger menu instead. */
+.tab{
+  /* Desktop: tall vertical strip on the right */
+  position:fixed;
+  top:0; right:0;
+  z-index:30;
+  width:64px;
+  height: clamp(280px, 34vh, 400px);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--green);
+  color:#ffffff;
+  writing-mode:vertical-rl;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:14px;
+  letter-spacing:.3em;
+  text-transform:uppercase;
+  cursor:pointer;
+  user-select:none;
+  pointer-events:auto;
+  transition:background .35s var(--ease);
+}
+.tab:hover{background:#93B37F}
+
+/* ---------- Carousel slides ---------- */
+.slides{position:absolute;inset:0;pointer-events:none}
+
+.slide{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  visibility:hidden;
+  transition:opacity .45s var(--ease), visibility 0s linear .45s;
+}
+.slide[data-active="true"]{
+  opacity:1;
+  visibility:visible;
+  transition:opacity .45s var(--ease);
+}
+
+/* Copy entrance: subtle rise + fade, staggered title → sub → cta */
+.slide[data-active="true"] .copy__title{
+  animation: copy-in .9s var(--ease) .05s both;
+}
+.slide[data-active="true"] .copy__sub{
+  animation: copy-in .9s var(--ease) .18s both;
+}
+.slide[data-active="true"] .copy__cta{
+  animation: copy-in .9s var(--ease) .25s both;
+}
+@keyframes copy-in{
+  from{opacity:0; transform:translateY(14px)}
+  to  {opacity:1; transform:translateY(0)}
+}
+
+/* ---------- Headline area ---------- */
+/* Figma: headline y=128 on 860px frame = ~15vh */
+.copy{
+  position:absolute;
+  top: clamp(110px, 15vh, 180px);
+  left:50%;
+  transform:translateX(-50%);
+  width:min(760px, 88vw);
+  text-align:center;
+  z-index:20;
+  pointer-events:none;
+}
+/* Figma: Skilt Gothic Regular 56–60px, letter-spacing -2%, line-height 110% */
+.copy__title{
+  font-family:var(--font-display);
+  font-weight:400;
+  font-size:clamp(34px, 4.2vw, 56px);
+  line-height:1.1;
+  letter-spacing:-.02em;
+  color:var(--ink);
+}
+.copy__title br{display:block}
+/* Figma: Meta Pro Book 20px, line-height 150% */
+.copy__sub{
+  margin-top:28px;
+  font-family:var(--font-body);
+  font-weight:400;
+  font-size:clamp(15px, 1.4vw, 20px);
+  line-height:1.5;
+  color:var(--ink);
+  max-width:540px;
+  margin-left:auto;margin-right:auto;
+}
+/* Figma: Skilt Gothic Medium 14px, uppercase, letter-spacing -2%,
+   pink fill #F7C8C7, height 56px, padding 0 24px, no border-radius */
+.copy__cta{
+  margin-top:24px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--pink);
+  color:var(--ink);
+  height:56px;
+  padding:0 24px;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:14px;
+  letter-spacing:-.02em;
+  text-transform:uppercase;
+  pointer-events:auto;
+  cursor:pointer;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+}
+.copy__cta:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 40px rgba(247,200,199,.55);
+}
+
+/* ---------- Pagination (01/04 + arrows) ---------- */
+/* Positioned in the gap between subtitle and the "main image top line".
+   Main image top = bottom of viewport minus 24px bottom gap
+   minus (box_height × 60%) where 60% is the visible main body.
+   Pager sits 48px above that line. */
+.pager{
+  position:absolute;
+  /* Centered horizontally, ~20px above the bottom edge of the viewport */
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:25;
+  display:flex;align-items:center;gap:18px;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:13px;
+  letter-spacing:.32em;
+  color:var(--brown);
+  text-transform:uppercase;
+  /* Frosted-glass — white-based so it pops against the image */
+  background:rgba(255, 255, 255, 0.72);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  padding:10px 22px;
+  border-radius:10px;
+}
+.pager__num{min-width:56px;text-align:right}
+.pager__arrows{display:flex;gap:8px}
+.pager__btn{
+  width:44px;height:44px;
+  border-radius:6px;
+  border:1px solid rgba(51,51,51,.22);
+  display:inline-flex;align-items:center;justify-content:center;
+  color:var(--ink);
+  transition:background .3s var(--ease), color .3s var(--ease), border-color .3s var(--ease), transform .3s var(--ease);
+}
+.pager__btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);transform:translateY(-1px)}
+.pager__btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* Auto-advance progress indicator — thin hairline below the pager */
+.pager__progress{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-12px;
+  height:1px;
+  background:rgba(51,51,51,.14);
+  overflow:hidden;
+  border-radius:1px;
+}
+.pager__progress__fill{
+  display:block;
+  height:100%;
+  width:100%;
+  background:var(--ink);
+  transform-origin:left center;
+  transform:scaleX(0);
+  animation:pager-fill var(--auto-dur,7s) linear forwards;
+}
+.pager[data-paused="true"] .pager__progress__fill{animation-play-state:paused}
+@keyframes pager-fill{
+  from{transform:scaleX(0)}
+  to  {transform:scaleX(1)}
+}
+
+/* ---------- Decorative shape illustrations ----------
+   Extracted 1:1 from Figma (shape-left.svg, shape-right.svg).
+   Shapes OVERLAP the image — they span from beyond the viewport
+   edge, across the image boundary, and into the image area.
+   Figma ref (1440px canvas, image x=79 w=1283, headerImage h=919):
+     Left:  x=-130 y=140 w=659 h=117  (left -9.03%, right 36.74%)
+     Right: x=1210 y=254 w=345 h=124  (left 84.03%, right 107.99%)
+   Vertical: left bottom offset 72.03%, right 58.87% of image height */
+.shape{
+  position:absolute;
+  pointer-events:none;
+  z-index:12;  /* above image, below tiles */
+}
+/* Left zigzag — starts 9% beyond viewport left, extends to ~37% of viewport.
+   209px before image left edge, overlaps the left portion of the image. */
+.shape--left{
+  left: -9.03%;
+  width: 45.76%;
+  /* 72.03% of image height from bottom (Figma: y=125 of image) */
+  bottom: calc(clamp(460px, 68vh, 820px) * 0.7203);
+  height: auto;
+}
+/* Right arches — starts at 84% of viewport, extends 8% beyond right edge.
+   Overlaps the image right edge and goes past the viewport. */
+.shape--right{
+  right: -7.99%;
+  width: 23.96%;
+  /* 58.87% of image height from bottom (Figma: y=228 of image) */
+  bottom: calc(clamp(460px, 68vh, 820px) * 0.5887);
+  height: auto;
+}
+
+@media (max-width: 820px){
+  .shape{display:none}
+}
+
+/* ---------- Image stage (bottom) ---------- */
+/* The media box is ALWAYS tall enough for the most dramatic silhouette
+   (spike/tower that extends high up). Bottom stays FIXED so images
+   never jump vertically between slides — only the clip-path changes,
+   revealing or hiding the upper area per slide. */
+.media{
+  position:absolute;
+  left:50%;
+  bottom:0;
+  transform:translateX(-50%);
+  width:min(1290px, calc(100% - 150px));
+  /* Figma: image y=176 on 860px frame → 79.5% of viewport.
+     Capped lower so headline-to-image gap stays comfortable on tall screens. */
+  height: clamp(460px, 68vh, 820px);
+  z-index:10;
+  overflow:hidden;
+  background:var(--bg-soft);
+  /* Palma building silhouette — extracted 1:1 from Figma Vector (node 5402:607).
+     Original: 1283×869 → converted to percentages.
+     Sharp diagonal spike on the left (16.67% 0% → 0% 38.54%),
+     stepped shelf in the middle, taller right column.
+     SAME shape for every slide — this IS the Palma building profile. */
+  clip-path: polygon(
+    100%   37.62%,   /* right column top-right */
+    88.33% 37.62%,   /* step inward from right */
+    88.33% 23.78%,   /* step up to shelf level */
+    26.67% 23.78%,   /* shelf — left edge */
+    26.67% 0%,       /* narrow tower top-right */
+    16.66% 0%,       /* narrow tower top-left (spike start) */
+    0%     38.54%,   /* SHARP diagonal spike down to left edge */
+    0%     100%,     /* bottom-left */
+    100%   100%      /* bottom-right */
+  );
+}
+
+/* No per-slide clip-path overrides — all 4 slides share the same
+   Palma building silhouette defined on .media above. */
+/* Images: no CSS transition — JS handles the swap timing. */
+.media__img{
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  object-position:center 30%;
+  opacity:0;
+}
+.media__img[data-active="true"]{opacity:1}
+
+/* ---------- Tile-replace transition ----------
+   Each tile does one rapid cycle: transparent → opaque → transparent.
+   The image swaps at the midpoint so the brief opaque flash
+   acts as a "shutter" between old and new photo.
+   Staggered in a domino wave → visual effect is a directional wipe
+   where old photo is directly overwritten by new photo. */
+.tiles{
+  position:absolute;
+  inset:0;
+  z-index:14;
+  pointer-events:none;
+}
+.tile{
+  position:absolute;
+  background: var(--bg);
+  will-change: opacity;
+  opacity: 0;
+  animation: tile-flip .32s var(--ease) both;
+}
+@keyframes tile-flip{
+  0%   { opacity: 0; }
+  45%  { opacity: 1; }
+  55%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.caption{
+  position:absolute;
+  left:28px;
+  bottom:8px;
+  z-index:15;
+  font-family:var(--font-body);
+  font-weight:400;
+  font-size:11px;
+  line-height:1.5;
+  color:rgba(255,255,255,.7);   /* biely, 70% opacity */
+  letter-spacing:.01em;
+}
+
+/* ---------- Dots (mobile-friendly alternative on small screens) ---------- */
+.dots{
+  position:absolute;
+  left:50%; bottom:14px;
+  transform:translateX(-50%);
+  display:none;
+  gap:8px;
+  z-index:20;
+}
+.dots button{
+  width:22px; height:2px;
+  background:rgba(51,51,51,.22);
+  transition:all .4s var(--ease);
+}
+.dots button[data-active="true"]{background:var(--ink);width:40px}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1100px){
+  .copy{top: clamp(120px, 14vh, 180px); width:min(640px, 88vw)}
+  .pager{
+    /* stays centered via left:50% + transform from base styles */
+  }
+  .media{
+    width:calc(100% - 80px);
+  }
+  .tab{height: clamp(240px, 30vh, 340px); width:56px; font-size:13px}
+}
+
+@media (max-width: 820px){
+  .stage{min-height:100vh;height:100vh}
+  .hdr{padding:20px 20px 0}
+  .hdr__logo{font-size:16px}
+  .hdr__nav{display:none}
+  .hdr__spacer{display:none}
+  .hdr__burger{display:flex;align-items:center;justify-content:center}
+  /* MÁM ZÁUJEM — same size as burger (44×44) */
+  .tab{
+    position:static;
+    writing-mode:horizontal-tb;
+    width:auto; height:44px;
+    margin-left:auto;
+    padding:0 14px;
+    font-size:9px;
+    letter-spacing:.14em;
+    order:1;
+  }
+  .hdr__burger{order:2; margin-left:10px}
+  /* Center copy vertically between header (~56px) and image top (100vh - 64vh = 36vh) */
+  .copy{
+    top: calc((56px + 100vh - 64vh) / 2);
+    transform: translate(-50%, -50%);
+    width:88vw;
+  }
+  .copy__title{font-size:clamp(30px, 7.5vw, 42px)}
+  .copy__sub{font-size:16px; margin-top:18px}
+  .copy__cta{height:48px; padding:0 20px; font-size:12px}
+  .pager{
+    top: auto;
+    bottom: 14px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    padding: 8px 16px;
+    background: rgba(227, 214, 204, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 8px;
+    font-size: 11px;
+    letter-spacing: .28em;
+    gap: 12px;
+  }
+  .pager__btn{ width: 40px; height: 40px; }
+  .pager__progress{display:none}
+  /* Image closer to text — taller and edge-to-edge */
+  .media{
+    width:calc(100% - 16px);
+    height:64vh;
+    bottom:0;
+  }
+  .caption{font-size:9px;left:12px;bottom:4px}
+  .dots{display:none}
+}
+
+@media (max-width: 480px){
+  .hdr{padding:16px 16px 0}
+  .hdr__logo{font-size:14px;letter-spacing:.14em}
+  /* Center copy between header (~48px) and image top (100vh - 58vh) */
+  .copy{
+    top: calc((48px + 100vh - 58vh) / 2);
+    transform: translate(-50%, -50%);
+  }
+  .copy__title{font-size:clamp(28px, 8vw, 34px);line-height:1.12}
+  .copy__sub{font-size:14px;margin-top:12px;line-height:1.5}
+  .copy__cta{margin-top:14px;height:44px;padding:0 18px;font-size:11px}
+  .media{height:58vh;bottom:0;width:calc(100% - 12px)}
+  .pager{ bottom: 12px; font-size: 10px; gap: 10px; }
+  .pager__btn{ width: 36px; height: 36px; }
+  /* Tab hidden on mobile — CTA lives inside the hamburger menu instead */
+  .tab{display:none}
+  /* Burger takes over margin-left:auto since tab is gone */
+  .hdr__burger{margin-left:auto}
+  /* Show the CTA inside mob-nav */
+  .mob-nav__cta{display:flex}
+}
+
+/* ---------- Focus ring for a11y ---------- */
+button:focus-visible, a:focus-visible{
+  outline:2px solid var(--ink);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* =========================================================
+   PRELOADER — Figma 1:1
+   Background #FFF5EB, PALMA letter-by-letter reveal,
+   percentage counter, thin progress bar,
+   decorative arch outline bottom-right.
+   ========================================================= */
+.preloader{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:var(--bg-soft);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  transition:opacity .8s var(--ease), visibility 0s linear .8s;
+}
+.preloader[data-done="true"]{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+/* PALMA letters — individual spans with progressive color reveal */
+.pre__logo{
+  display:flex;
+  gap:.18em;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:clamp(28px, 3vw, 42px);
+  letter-spacing:.22em;
+  user-select:none;
+}
+.pre__letter{
+  color:var(--bg);          /* starts light (blends with bg) */
+  transition:color .4s var(--ease);
+}
+.pre__letter[data-lit="true"]{
+  color:var(--ink);         /* darkens when "lit" */
+}
+/* Counter */
+.pre__counter{
+  margin-top:18px;
+  font-family:var(--font-display);
+  font-weight:500;
+  font-size:16px;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  min-width:2ch;
+  text-align:center;
+}
+/* Progress bar — 148px, 1px tall (Figma exact) */
+.pre__bar{
+  margin-top:20px;
+  width:148px;
+  height:1px;
+  background:rgba(51,51,51,.14);
+  position:relative;
+  overflow:hidden;
+}
+.pre__bar__fill{
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:0%;
+  background:var(--ink);
+  transition:width .08s linear;
+}
+/* Decorative arch — bottom-right, outline in sand color.
+   Uses the same shape-right.svg but rendered as a larger outline. */
+.pre__deco{
+  position:absolute;
+  bottom:-20px;
+  right:-40px;
+  width:clamp(300px, 32vw, 464px);
+  height:auto;
+  opacity:.45;
+  pointer-events:none;
+}
+
+/* ---------- Reduce motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important}
+}
+</style>
+</head>
+<body>
+
+<!-- Preloader overlay -->
+<div class="preloader" id="preloader" aria-label="Načítavam…">
+  <div class="pre__logo" aria-hidden="true">
+    <span class="pre__letter">P</span>
+    <span class="pre__letter">A</span>
+    <span class="pre__letter">L</span>
+    <span class="pre__letter">M</span>
+    <span class="pre__letter">A</span>
+  </div>
+  <div class="pre__counter" id="preCounter">0</div>
+  <div class="pre__bar"><div class="pre__bar__fill" id="preBarFill"></div></div>
+  <img class="pre__deco" src="./assets/shape-right.svg" alt="" aria-hidden="true">
+</div>
+
+<main class="stage" id="stage" data-slide="1" aria-label="Palma — hero carousel">
+
+  <!-- Header / nav -->
+  <header class="hdr">
+    <a class="hdr__logo" href="#" aria-label="Palma — domovská stránka">
+      <!-- Ak palma.svg existuje v /assets, zobrazí sa; inak fallback na text PALMA cez onerror. -->
+      <img src="./assets/palma.svg" alt="Palma" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+      <span class="hdr__logo__text" style="display:none">PALMA</span>
+    </a>
+    <nav class="hdr__nav" aria-label="Hlavné menu">
+      <a href="#">Palma LIVE</a>
+      <a href="#">Naša vízia</a>
+      <a href="#">Tvorcovia</a>
+      <a href="#">Príbeh Palmy</a>
+      <a href="#">Lokalita</a>
+      <a href="#">Kontakt</a>
+    </nav>
+    <div class="hdr__spacer"></div>
+    <!-- MÁM ZÁUJEM tab — vertical on desktop, horizontal in header on tablet, hidden on mobile -->
+    <button class="tab" type="button" aria-label="Mám záujem">MÁM ZÁUJEM</button>
+    <!-- Hamburger — visible only on ≤820px -->
+    <button class="hdr__burger" id="burger" type="button" aria-label="Menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
+  </header>
+
+  <!-- Mobile fullscreen nav overlay -->
+  <nav class="mob-nav" id="mobNav" aria-label="Mobilné menu">
+    <a class="mob-nav__link" href="#">Palma LIVE</a>
+    <a class="mob-nav__link" href="#">Naša vízia</a>
+    <a class="mob-nav__link" href="#">Tvorcovia</a>
+    <a class="mob-nav__link" href="#">Príbeh Palmy</a>
+    <a class="mob-nav__link" href="#">Lokalita</a>
+    <a class="mob-nav__link" href="#">Kontakt</a>
+    <button class="mob-nav__cta" type="button">Mám záujem</button>
+  </nav>
+
+  <!-- Decorative shape illustrations — exported from Figma 1:1 -->
+  <img class="shape shape--left" src="./assets/shape-left.svg" alt="" aria-hidden="true">
+  <img class="shape shape--right" src="./assets/shape-right.svg" alt="" aria-hidden="true">
+
+
+  <!-- Slides (copy) -->
+  <div class="slides" aria-live="polite">
+    <article class="slide" data-index="1" data-active="true">
+      <div class="copy">
+        <h1 class="copy__title">Najočakávanejšia mestská<br>štvrť v predaji</h1>
+        <a class="copy__cta" href="#">Chcem byť pritom</a>
+      </div>
+    </article>
+
+    <article class="slide" data-index="2">
+      <div class="copy">
+        <h1 class="copy__title">Najkrajšie výhľady?<br>Tie z môjho bytu.</h1>
+        <p class="copy__sub">Milujem, že žijem na mieste, kde pri pohľade<br>z okna nevyzerá všetko tak isto.</p>
+      </div>
+    </article>
+
+    <article class="slide" data-index="3">
+      <div class="copy">
+        <h1 class="copy__title">Byť doma<br>vo vnútri aj vonku.</h1>
+        <p class="copy__sub">Pocit, že je všetko tak, ako má byť. Či už doma<br>v obývačke, alebo na lavičke pred bytom.</p>
+      </div>
+    </article>
+
+    <article class="slide" data-index="4">
+      <div class="copy">
+        <h1 class="copy__title">Najlepší benefit?<br>Mať všetko poruke!</h1>
+        <p class="copy__sub">Možnosť vyriešiť lekáreň, potraviny, čistiareň či<br>drogériu cestou z práce a nestratiť pritom voľný čas.</p>
+      </div>
+    </article>
+  </div>
+
+  <!-- Pagination (01 / 04) + arrows + auto-advance progress -->
+  <div class="pager" id="pager" role="group" aria-label="Navigácia slide-ov">
+    <button class="pager__num" id="num" type="button" aria-label="Aktuálny slide">01/04</button>
+    <div class="pager__arrows">
+      <button class="pager__btn" id="prev" type="button" aria-label="Predchádzajúci">
+        <svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <button class="pager__btn" id="next" type="button" aria-label="Ďalší">
+        <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+    <div class="pager__progress" aria-hidden="true"><span class="pager__progress__fill" id="progress"></span></div>
+  </div>
+
+  <!-- Image / architectural render -->
+  <div class="media" id="media">
+    <img class="media__img" data-index="1" data-active="true" alt="Palma — vizualizácia centrálneho námestia"
+         src="https://www.figma.com/api/mcp/asset/647f9db0-7333-4f7f-b510-f1e5fe7a23ad">
+    <img class="media__img" data-index="2" alt="Palma — vizualizácia s výhľadom z bytov"
+         src="https://www.figma.com/api/mcp/asset/b55fb576-7648-48a4-baf3-6a54b8e6d63b">
+    <img class="media__img" data-index="3" alt="Palma — vizualizácia verejného priestoru"
+         src="https://www.figma.com/api/mcp/asset/444bdbd5-6dee-412e-ba42-ef5d671e4304">
+    <img class="media__img" data-index="4" alt="Palma — vizualizácia obchodnej ulice"
+         src="https://www.figma.com/api/mcp/asset/e50e6518-20ea-407a-bc06-6727a42f312d">
+    <p class="caption">Vizualizácie sú ilustračné a môžu podliehať budúcim zmenám.</p>
+    <!-- Tiles overlay — JS populates this on every slide change, triggering
+         a staggered flicker-reveal of the image below. -->
+    <div class="tiles" id="tiles" aria-hidden="true"></div>
+  </div>
+
+  <!-- Mobile dots -->
+  <div class="dots" role="tablist">
+    <button type="button" data-slide="1" data-active="true" aria-label="Slide 1"></button>
+    <button type="button" data-slide="2" aria-label="Slide 2"></button>
+    <button type="button" data-slide="3" aria-label="Slide 3"></button>
+    <button type="button" data-slide="4" aria-label="Slide 4"></button>
+  </div>
+
+</main>
+
+<script>
+(() => {
+  /* =========================================================
+     PRELOADER — letter-by-letter PALMA reveal + counter + bar
+     ========================================================= */
+  const preloader = document.getElementById('preloader');
+  const preLetters = document.querySelectorAll('.pre__letter');
+  const preCounter = document.getElementById('preCounter');
+  const preBarFill = document.getElementById('preBarFill');
+  const PRELOAD_MS = 2800;  // total preload duration
+  let preloadDone = false;
+
+  function runPreloader(){
+    const start = performance.now();
+    const letterCount = preLetters.length;  // 5
+
+    function tick(now){
+      const elapsed = now - start;
+      const pct = Math.min(elapsed / PRELOAD_MS, 1);
+      const display = Math.round(pct * 100);
+
+      // Update counter
+      preCounter.textContent = display;
+
+      // Update progress bar
+      preBarFill.style.width = pct * 100 + '%';
+
+      // Light up letters progressively (each letter = 20% of progress)
+      preLetters.forEach((letter, i) => {
+        const threshold = (i + 1) / letterCount;
+        letter.dataset.lit = pct >= threshold ? 'true' : 'false';
+      });
+
+      if (pct < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        // Done — fade out preloader and start hero
+        preloadDone = true;
+        preloader.dataset.done = 'true';
+        setTimeout(initCarousel, 200);
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Start preloader immediately
+  runPreloader();
+
+  /* =========================================================
+     HERO CAROUSEL
+     ========================================================= */
+  const stage    = document.getElementById('stage');
+  const slides   = document.querySelectorAll('.slide');
+  const images   = document.querySelectorAll('.media__img');
+  const dots     = document.querySelectorAll('.dots button');
+  const numEl    = document.getElementById('num');
+  const prevBtn  = document.getElementById('prev');
+  const nextBtn  = document.getElementById('next');
+  const pager    = document.getElementById('pager');
+  const progress = document.getElementById('progress');
+  const tilesEl  = document.getElementById('tiles');
+  const total    = slides.length;
+
+  /* ---------- Tile-replace transition ----------
+     Each tile does a rapid flash (0→1→0 opacity cycle).
+     The image swap happens when the first tile hits its peak,
+     so the opaque tile acts as a tiny shutter between old→new.
+     Staggered in a domino wave → directional wipe effect. */
+  function revealTiles(){
+    if (!tilesEl) return;
+
+    const w = window.innerWidth;
+    const cols = w < 520 ? 6 : w < 900 ? 8 : 10;
+    const rows = w < 520 ? 4 : w < 900 ? 5 : 6;
+    const frag = document.createDocumentFragment();
+    const maxDist = cols + rows - 2;
+
+    for (let r = 0; r < rows; r++){
+      for (let c = 0; c < cols; c++){
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.style.left   = (c / cols * 100) + '%';
+        tile.style.top    = (r / rows * 100) + '%';
+        tile.style.width  = (100 / cols) + '%';
+        tile.style.height = (100 / rows) + '%';
+
+        // Domino wave: diagonal from top-left → bottom-right
+        const dist   = c + r;
+        const wave   = (dist / maxDist) * 500;
+        const jitter = Math.random() * 20;
+        tile.style.animationDelay = (wave + jitter) + 'ms';
+        frag.appendChild(tile);
+      }
+    }
+    tilesEl.replaceChildren(frag);
+  }
+
+  const AUTO_MS = 7000;
+  stage.style.setProperty('--auto-dur', (AUTO_MS / 1000) + 's');
+
+  let idx = 1;
+  let timer = null;
+  let paused = false;
+
+  function setActive(list, matches){
+    list.forEach(el => el.dataset.active = matches(el) ? "true" : "false");
+  }
+
+  function restartProgress(){
+    if (!progress) return;
+    progress.style.animation = 'none';
+    void progress.offsetWidth;
+    progress.style.animation = '';
+  }
+
+  function go(n, opts){
+    if (n < 1) n = total;
+    if (n > total) n = 1;
+    if (n === idx && !(opts && opts.force)) return;
+
+    // 1. Fire tile animation first (tiles start transparent, flash opaque)
+    revealTiles();
+
+    // 2. Swap images after a tiny delay — timed so the first tiles
+    //    are at peak opacity, acting as a shutter between old→new
+    setTimeout(() => {
+      idx = n;
+      stage.dataset.slide = String(idx);
+      setActive(slides, s => Number(s.dataset.index) === idx);
+      setActive(images, i => Number(i.dataset.index) === idx);
+      setActive(dots,   d => Number(d.dataset.slide) === idx);
+      numEl.textContent = String(idx).padStart(2,'0') + '/' + String(total).padStart(2,'0');
+    }, 140);  // ~45% of 320ms animation = peak opacity of first tiles
+
+    restartProgress();
+    scheduleNext();
+  }
+
+  function scheduleNext(){
+    if (timer) clearTimeout(timer);
+    if (paused) return;
+    timer = setTimeout(() => go(idx + 1), AUTO_MS);
+  }
+
+  function pause(){
+    paused = true;
+    if (timer) clearTimeout(timer);
+    pager.dataset.paused = "true";
+  }
+  function resume(){
+    paused = false;
+    pager.dataset.paused = "false";
+    restartProgress();
+    scheduleNext();
+  }
+
+  /* ---------- Init carousel (called after preloader) ---------- */
+  function initCarousel(){
+    // Pause on hover / focus / visibility
+    stage.addEventListener('mouseenter', pause);
+    stage.addEventListener('mouseleave', resume);
+    stage.addEventListener('focusin',  pause);
+    stage.addEventListener('focusout', resume);
+    document.addEventListener('visibilitychange', () => {
+      document.hidden ? pause() : resume();
+    });
+
+    // First load — no tile transition needed, just start auto-advance
+    restartProgress();
+    scheduleNext();
+  }
+
+  // Rebuild tile grid on resize
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(revealTiles, 180);
+  });
+
+  // Manual nav
+  nextBtn.addEventListener('click', () => go(idx + 1));
+  prevBtn.addEventListener('click', () => go(idx - 1));
+  numEl.addEventListener('click',  () => go(idx + 1));
+  dots.forEach(d => d.addEventListener('click', () => go(Number(d.dataset.slide))));
+
+  // Keyboard
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') go(idx + 1);
+    if (e.key === 'ArrowLeft')  go(idx - 1);
+    if (/^[1-4]$/.test(e.key))  go(Number(e.key));
+  });
+
+  // Touch swipe
+  let tx = 0, ty = 0;
+  stage.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+  stage.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      dx < 0 ? go(idx + 1) : go(idx - 1);
+    }
+  });
+
+  // Tapping the heading cycles
+  document.querySelectorAll('.copy__title').forEach(h => {
+    h.style.cursor = 'pointer';
+    h.style.pointerEvents = 'auto';
+    h.addEventListener('click', () => go(idx + 1));
+  });
+
+  /* =========================================================
+     HAMBURGER MENU — toggle mobile overlay
+     ========================================================= */
+  const burger = document.getElementById('burger');
+  const mobNav = document.getElementById('mobNav');
+  if (burger && mobNav) {
+    burger.addEventListener('click', () => {
+      const open = mobNav.dataset.open === 'true';
+      mobNav.dataset.open = open ? 'false' : 'true';
+      burger.setAttribute('aria-expanded', open ? 'false' : 'true');
+      // Pause/resume carousel when menu is open/closed
+      if (!open) pause(); else resume();
+    });
+    // Close on link click
+    mobNav.querySelectorAll('.mob-nav__link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobNav.dataset.open = 'false';
+        burger.setAttribute('aria-expanded', 'false');
+        resume();
+      });
+    });
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && mobNav.dataset.open === 'true') {
+        mobNav.dataset.open = 'false';
+        burger.setAttribute('aria-expanded', 'false');
+        resume();
+      }
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
